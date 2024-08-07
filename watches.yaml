@@ -1,0 +1,11 @@
+---
+# Use the 'create api' subcommand to add watches to this file.
+- version: v1alpha1
+  group: external.saiello.github.io
+  kind: KafkaConnector
+  role: kafkaconnector
+#+kubebuilder:scaffold:watch
+  finalizer:
+    name: external.saiello.github.io/finalizer
+    vars:
+      state: absent

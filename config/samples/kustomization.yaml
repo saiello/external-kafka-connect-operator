@@ -1,0 +1,4 @@
+## Append samples of your project ##
+resources:
+- external_v1alpha1_kafkaconnector.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples

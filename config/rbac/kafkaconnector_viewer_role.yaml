@@ -1,0 +1,23 @@
+# permissions for end users to view kafkaconnectors.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: external-connect-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: kafkaconnector-viewer-role
+rules:
+- apiGroups:
+  - external.saiello.github.io
+  resources:
+  - kafkaconnectors
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - external.saiello.github.io
+  resources:
+  - kafkaconnectors/status
+  verbs:
+  - get

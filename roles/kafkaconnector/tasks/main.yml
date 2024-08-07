@@ -1,0 +1,59 @@
+---
+- name: Prepare some variables
+  ansible.builtin.set_fact:
+    all_configs: "{{ config | combine({ 'connector.class': class,  'tasksMax': tasks_max }) }}"
+
+
+- name: Get connectors
+  ansible.builtin.uri:
+    url: "{{ _api_url }}/connectors"
+    method: GET
+  register: get_connectors
+
+
+- name: Set connector existence fact
+  set_fact:
+    connector_exists: "{{ (ansible_operator_meta.name in get_connectors.json) | bool }}"
+
+
+# use the Rest api to create and update the connector
+# see: https://kafka.apache.org/38/generated/connect_rest.yaml
+# see: https://kafka.apache.org/documentation.html#connect
+
+- name: Create connector
+  ansible.builtin.uri:
+    url: "{{ _api_url }}/connectors"
+    method: POST
+    status_code: [201]
+    body_format: json
+    body:
+      name: "{{ ansible_operator_meta.name }}"
+      config: "{{ all_configs }}"
+  when: 
+    - state == 'running'
+    - not connector_exists
+
+
+- name: Update connector's config 
+  ansible.builtin.uri:
+    url: "{{ _api_url }}/connectors/{{ ansible_operator_meta.name }}/config" 
+    method: PUT
+    body_format: json
+    body: "{{ all_configs }}"
+  when: 
+    - state == 'running'
+    - connector_exists
+
+
+- name: Delete connector
+  ansible.builtin.uri:
+    url: "{{ _api_url }}/connectors/{{ ansible_operator_meta.name }}" 
+    method: DELETE
+    status_code: [201]
+  when: 
+    - state == 'absent'
+    - connector_exists
+
+
+
+

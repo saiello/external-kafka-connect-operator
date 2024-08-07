@@ -1,0 +1,11 @@
+---
+# vars file for KafkaConnector
+
+_label_schema: external.saiello.github.io/api-schema
+_label_host: external.saiello.github.io/api-host
+_label_port: external.saiello.github.io/api-port
+
+_labels: "{{ _external_saiello_github_io_kafkaconnector.metadata.labels }}"
+
+
+_api_url: "{{ _labels[_label_schema] }}://{{ _labels[_label_host] }}:{{ _labels[_label_port] }}"
